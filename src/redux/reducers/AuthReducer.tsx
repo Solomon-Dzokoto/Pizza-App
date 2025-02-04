@@ -55,7 +55,7 @@ export const loginWithEmailAndPassword = createAsyncThunk('auth/login', async (c
         if (!userData) throw new Error("User not found");
 
         return { uid: user.uid, email, name: userData?.name, role: userData?.role, photoURL: userData?.photoURL };
-    } catch (error: any) {
+    } catch (error: any ) {
         return rejectWithValue(error.message);
     }
 });
@@ -99,9 +99,10 @@ export const logout = createAsyncThunk("auth/logout", async (_, { rejectWithValu
 export const resetPassword = createAsyncThunk(
     "auth/resetPassword",
     async (email: string, { rejectWithValue }) => {
+        if (!email) throw new Error("Email is required");
         try {
             await sendPasswordResetEmail(auth, email);
-            return email; // If successful, return email to show confirmation message
+            return email; 
         } catch (error: any) {
             return rejectWithValue(error.message);
         }

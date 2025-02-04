@@ -3,11 +3,10 @@ import { FcGoogle } from "react-icons/fc";
 import { useForm } from "react-hook-form";
 import * as yup from "yup"
 import { yupResolver } from "@hookform/resolvers/yup";
-import React from "react";
 import { useDispatch, useSelector } from "react-redux"
-import { RootState, AppDispatch } from "../redux/store";
-import { loginWithEmailAndPassword, signInWithGoogle } from "../redux/reducers/AuthReducer";
-import loader from '../../public/assets/loading.png'
+import { RootState, AppDispatch } from "../../redux/store/store";
+import { loginWithEmailAndPassword, signInWithGoogle } from "../../redux/reducers/AuthReducer";
+import loader from '/assets/loading.png'
 
 const Login = () => {
 
@@ -39,8 +38,9 @@ const Login = () => {
           <label htmlFor="password" className="font-semibold text-sm  px-2 mb-2">Password</label>
           <input {...register("password")} type="password" placeholder="password" className="border p-2 outline-[#BB3E00]  border-gray-400  w-full rounded-md " />
           {errors.password && <small className="text-red-500">{errors.password.message}</small>}
+          <small>You forgot your password? <a href="#" className="text-blue-500 transition-all  hover:underline">Reset Password</a> </small>
           <button type="submit" disabled={loading} className="bg-[#BB3E00] hover:bg-[#bb3e00f1] cursor-pointer text-white block font-semibold py-2 px-4 rounded-md mt-4"> {loading ? <img className="text-center" src={loader} alt="loader" /> : "SignIn"} </button>
-          <button type="submit" onClick={()=>  dispatch(signInWithGoogle())} className="border-2 flex items-center hover:border-[#bb3e00f1] hover:text-[#bb3e00f1] justify-center gap-2 border-[#BB3E00] text-[#BB3E00] cursor-pointer  font-semibold py-2 px-4 rounded-md mt-4">SignIn with Google <FcGoogle /> </button>
+          <button type="submit" onClick={()=>  dispatch(signInWithGoogle())} className="border-2 flex items-center hover:border-[#bb3e00f1] hover:text-[#bb3e00f1] justify-center gap-2 border-[#BB3E00] text-[#BB3E00] cursor-pointer  font-semibold py-2 px-4 rounded-md mt-2">SignIn with Google <FcGoogle /> </button>
           <small>You don't have an account? <Link to="/signup" className="text-blue-500 hover:text-blue-700">Signin</Link></small>
         </form>
       </article>
