@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { auth, db } from "../../firebase/firebase.config";
-import { createUserWithEmailAndPassword,sendPasswordResetEmail, signInWithEmailAndPassword, signOut, updateProfile, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { createUserWithEmailAndPassword, sendPasswordResetEmail, signInWithEmailAndPassword, signOut, updateProfile, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { doc, setDoc, getDoc } from "firebase/firestore";
 
 interface UserProp {
@@ -10,8 +10,9 @@ interface UserProp {
     role: "user" | "admin";
     loading: boolean;
     error: string | null;
-    resetEmailSent:boolean;
+    resetEmailSent: boolean;
 }
+
 
 const initialState: UserProp = {
     uid: "",
@@ -45,6 +46,7 @@ export const loginWithEmailAndPassword = createAsyncThunk('auth/login', async (c
     try {
         const { email, password } = credentials;
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        console.log(userCredential)
         const user = userCredential.user;
 
         const userDoc = await getDoc(doc(db, "users", user.uid));
@@ -63,6 +65,7 @@ export const signInWithGoogle = createAsyncThunk('auth/google', async (_, { reje
         const provider = new GoogleAuthProvider();
         const result = await signInWithPopup(auth, provider);
         const user = result?.user;
+        console.log(user)
 
         const userDoc = await getDoc(doc(db, "users", user.uid));
         let role = "user";
@@ -79,7 +82,7 @@ export const signInWithGoogle = createAsyncThunk('auth/google', async (_, { reje
         }
 
         return { uid: user.uid, email: user.email || "", name: user.displayName || "No Name", role, photoURL: user.photoURL };
-    } catch (error : any) {
+    } catch (error: any) {
         return rejectWithValue(error.message);
     }
 });
@@ -88,7 +91,7 @@ export const logout = createAsyncThunk("auth/logout", async (_, { rejectWithValu
     try {
         await signOut(auth);
         return initialState;
-    } catch (error : any) {
+    } catch (error: any) {
         return rejectWithValue(error.message);
     }
 });
@@ -147,7 +150,7 @@ const AuthReducer = createSlice({
                 state.uid = action.payload.uid;
                 state.email = action.payload.email;
                 state.name = action.payload.name;
-                state.role =  "user" ;
+                state.role = "user";
                 state.loading = false;
                 state.error = null;
             })
