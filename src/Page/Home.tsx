@@ -1,10 +1,15 @@
 import { FaUser, FaCartPlus } from "react-icons/fa"
 import { RiHeartsLine } from "react-icons/ri";
 import { data } from "../utils/data.tsx"
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store/store";
 const Home = () => {
     const navData = ["Order", "Delivery", "About", "Contact"]
+    const { loading } = useSelector((state: RootState) => state.auth)
+
+
     return (
-        <div className="container py-4 px-[clamp(2rem,5vw,4rem)] bg-[#FFF1D7] min-h-screen ">
+        <div className="container py-4 px-[clamp(2rem,5vw,4rem)] bg-[#FFF1D7] min-h-screen">
             <header className="flex justify-between items-center">
                 <div className="rounded-full overflow-hidden w-[3rem] ">
                     <img className="" src="/assets/logo.jpeg" alt="logo" />
