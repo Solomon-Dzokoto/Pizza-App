@@ -14,7 +14,7 @@ const ForgotPassword = () => {
     const { loading, error, resetEmailSent } = useSelector((state: RootState) => state.auth);
 
     const { register, handleSubmit, formState: { errors } } = useForm({
-        resolver: yupResolver(schema),
+        resolver: yupResolver(schema)
     });
 
     const onSubmit = (data: any) => {
@@ -22,18 +22,18 @@ const ForgotPassword = () => {
     };
 
     return (
-        <div>
-            <h2 className="text-[1.5rem] ">Forgot Password</h2>
+        <div className="border-2 shadow-lg rounded-md max-w-[30vw] min-w-[35vw] border-[#BB3E00] p-8">
+            <h2 className="text-[1.5rem] mb-2 text-center">Forgot Password? 🤦‍♂️ </h2>
             {resetEmailSent ? (
                 <p className="text-green-500">A password reset link has been sent to your email.</p>
             ) : (
                 <form onSubmit={handleSubmit(onSubmit)}>
-                    <input {...register("email")} placeholder="Enter your email" />
-                    {errors.email && <p>{errors.email.message}</p>}
-                    <button type="submit" disabled={loading}>
+                    <input {...register("email")} className="border p-2 mb-2 outline-[#BB3E00] border-gray-400  w-full rounded-md " placeholder="Enter your email" />
+                    {errors.email && <small className="text-red-500 block">{errors.email.message}</small>}
+                    <button className="border-2 flex items-center justify-center gap-2 bg-[#BB3E00] w-full text-white cursor-pointer  font-semibold py-2 px-4 rounded-md mt-4" type="submit" disabled={loading}>
                         {loading ? "Sending..." : "Reset Password"}
                     </button>
-                    {error && <p className="text-red-500">{error}</p>}
+                    {error && <small className="text-red-500">{error}</small>}
                 </form>
             )}
         </div>
