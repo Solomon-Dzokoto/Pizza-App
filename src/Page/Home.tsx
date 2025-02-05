@@ -3,13 +3,23 @@ import { RiHeartsLine } from "react-icons/ri";
 import { data } from "../utils/data.tsx"
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store/store";
+import { useDispatch } from "react-redux";
+import { isOpen } from "../redux/reducers/AuthReducer.tsx";
+
+
 const Home = () => {
     const navData = ["Order", "Delivery", "About", "Contact"]
-    const { loading } = useSelector((state: RootState) => state.auth)
+    const { name, photoURL,open } = useSelector((state: RootState) => state.auth)
+    const dispatch = useDispatch()
 
+    const access = () => {  
+        console.log("clicked")
+        dispatch(isOpen(!open))
+        if(name)return;
+    }
 
     return (
-        <div className="container py-4 px-[clamp(2rem,5vw,4rem)] bg-[#FFF1D7] min-h-screen">
+        <div className="container py-4 mx-auto px-[clamp(2rem,5vw,4rem)] bg-[#FFF1D7] min-h-screen">
             <header className="flex justify-between items-center">
                 <div className="rounded-full overflow-hidden w-[3rem] ">
                     <img className="" src="/assets/logo.jpeg" alt="logo" />
@@ -24,7 +34,9 @@ const Home = () => {
                     </ul>
                 </nav>
                 <div className="text-white relative z-50 flex gap-2">
-                    <button className=""><FaUser /></button>
+                    <button onClick={access} className="cursor-pointer ">{
+                        name ? <img src={photoURL} alt={name} /> : <FaUser />
+                    }</button>
                     <button className=""><FaCartPlus /></button>
                 </div>
             </header>

@@ -6,9 +6,17 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import {signupWithEmailAndPassword ,signInWithGoogle} from "../../redux/reducers/AuthReducer"
 import { useForm } from "react-hook-form";
 import { AppDispatch } from "../../redux/store/store";
+// import { useNavigate } from "react-router-dom";
 
+
+// interface SignupForm {
+//   name: string;
+//   email: string;
+//   password: string;
+//   confirmPassword: string;
+//   role: "user" | "admin";
+// }
 const Signup = () => {
-
   const dispatch = useDispatch<AppDispatch>()
 
   const schema = yup.object().shape({
@@ -24,15 +32,13 @@ const Signup = () => {
   })
 
   const onSubmit = (data:any) => {
-    dispatch(signupWithEmailAndPassword(data))
+    dispatch(signupWithEmailAndPassword( data))
   }
-
-
-
+  
   return (
-    <article className="border-2 shadow-lg rounded-md max-w-[30vw] min-w-[35vw] border-[#BB3E00] p-8">
-      <form onClick={handleSubmit(onSubmit)} className=" gap-1.5" >
-        <h1 className="font-semibold text-center text-2xl text-[#BB3E00] ">Create an Account! ✍🏻</h1>
+    <article className="border-2 fixed left-1/2 top-1/2 -translate-1/2 animate__animated animate_fadeInTopLeft shadow-lg rounded-md max-w-[30vw] min-w-[35vw] border-[#BB3E00] p-8">
+      <form onSubmit={handleSubmit(onSubmit)} className=" gap-1.5" >
+        <h1 className="font-semibold mb-8 text-center text-2xl text-[#BB3E00] ">Create an Account! ✍🏻</h1>
         <label htmlFor="name" className="font-semibold text-sm px-2  mb-2">Name</label>
         <input {...register("name")} type="text" placeholder="your fullname"  className="border p-2 outline-[#BB3E00] border-gray-400  w-full rounded-md " />
         {errors.name && <small className="text-red-500 block">{errors.name.message}</small>}
@@ -52,7 +58,7 @@ const Signup = () => {
         </select>
         {errors.role && <small className="text-red-500">{errors.role.message}</small>}
         <button type="submit" className="bg-[#BB3E00] w-full cursor-pointer text-white block font-semibold py-2 px-4 rounded-md mt-4">Create Account</button>
-        <button onClick={()=> dispatch(signInWithGoogle())} type="submit" className="border-2 flex items-center justify-center gap-2 border-[#BB3E00] w-full text-[#BB3E00] cursor-pointer  font-semibold py-2 px-4 rounded-md mt-4">SignUp with Google <FcGoogle/> </button>
+        <button onClick={()=> dispatch(signInWithGoogle())} type="button" className="border-2 flex items-center justify-center gap-2 border-[#BB3E00] w-full text-[#BB3E00] cursor-pointer  font-semibold py-2 px-4 rounded-md mt-4">SignUp with Google <FcGoogle/> </button>
         <small>Already have an account?<Link to="/login" className="text-blue-500 hover:text-blue-700">Signin</Link></small>
       </form>
     </article>

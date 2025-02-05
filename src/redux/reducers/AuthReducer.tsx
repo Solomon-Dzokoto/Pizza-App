@@ -3,6 +3,7 @@ import { auth, db } from "../../firebase/firebase.config";
 import { createUserWithEmailAndPassword, sendPasswordResetEmail, signInWithEmailAndPassword, signOut, updateProfile, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { doc, setDoc, getDoc } from "firebase/firestore";
 
+
 interface UserProp {
     uid: string | null;
     email: string;
@@ -10,7 +11,9 @@ interface UserProp {
     role: "user" | "admin";
     loading: boolean;
     error: string | null;
+    photoURL: string | null;
     resetEmailSent: boolean;
+    open:boolean;
 }
 
 
@@ -19,17 +22,20 @@ const initialState: UserProp = {
     email: "",
     name: "",
     role: "user",
+    photoURL: "",
     loading: false,
     error: null,
     resetEmailSent: false,
+    open:false,
 };
 
-export const signupWithEmailAndPassword = createAsyncThunk('auth/signup', async (credentials: { name: string, email: string, password: string, role: "user" | "admin" }, { rejectWithValue }) => {
+export const signupWithEmailAndPassword = createAsyncThunk('auth/signup', async (credentials: { email: string, password: string, name: string, role: "user" | "admin"}, { rejectWithValue }) => {
     try {
         const { email, password, name, role } = credentials;
+        if(!email||!password||!name) throw new Error("All fields are required")
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        if(!userCredential.user) rejectWithValue("User not created")
         const user = userCredential.user;
-
         await updateProfile(user, { displayName: name });
 
         await setDoc(doc(db, "users", user.uid), {
@@ -80,7 +86,7 @@ export const signInWithGoogle = createAsyncThunk('auth/google', async (_, { reje
                 uid: user.uid
             });
         }
-
+  
         return { uid: user.uid, email: user.email || "", name: user.displayName || "No Name", role, photoURL: user.photoURL };
     } catch (error: any) {
         return rejectWithValue(error.message);
@@ -112,10 +118,15 @@ export const resetPassword = createAsyncThunk(
 const AuthReducer = createSlice({
     name: "auth",
     initialState,
-    reducers: {},
+    reducers: {
+        isOpen : (state,action)=>{
+            state.open = action.payload;
+        }
+    },
     extraReducers: (builder) => {
         builder
             .addCase(signupWithEmailAndPassword.fulfilled, (state, action) => {
+                state.photoURL = null;
                 state.uid = action.payload.uid;
                 state.email = action.payload.email;
                 state.name = action.payload.name;
@@ -151,6 +162,7 @@ const AuthReducer = createSlice({
                 state.uid = action.payload.uid;
                 state.email = action.payload.email;
                 state.name = action.payload.name;
+                state.photoURL = action.payload.photoURL;
                 state.role = "user";
                 state.loading = false;
                 state.error = null;
@@ -197,5 +209,7 @@ const AuthReducer = createSlice({
             });
     }
 });
+
+export const { isOpen } = AuthReducer.actions;
 
 export default AuthReducer.reducer;
