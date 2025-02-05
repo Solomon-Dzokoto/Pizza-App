@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom"
+import { Link ,useNavigate} from "react-router-dom"
 import { FcGoogle } from "react-icons/fc";
 import { useForm } from "react-hook-form";
 import * as yup from "yup"
@@ -8,11 +8,12 @@ import { RootState, AppDispatch } from "../../redux/store/store";
 import { loginWithEmailAndPassword, signInWithGoogle } from "../../redux/reducers/AuthReducer";
 import loader from '/assets/loading.png'
 
+
 const Login = () => {
 
   const dispatch = useDispatch<AppDispatch>()
   const { loading,error,open } = useSelector((state: RootState) => state.auth)
-
+  const navigate = useNavigate()
 
   const schema = yup.object().shape({
     email: yup.string().email("Please enter a valid email").required("Email is required"),
@@ -24,14 +25,14 @@ const Login = () => {
   })
 
   const onSubmit = (data: any) => {
-    dispatch(loginWithEmailAndPassword(data))
+    if(dispatch(loginWithEmailAndPassword(data)))navigate("/");
   }
 
   return (
     <>
       {
-        open && (
-          <div className="animate__animated left-1/2 top-1/2 -translate-1/2 animate__fadeInDown">
+        !open ? (
+          <div className="animate__animated fixed z-50 left-1/2 top-1/2 -translate-1/2 animate__fadeInDown">
             <article className="border-2 shadow-lg rounded-md max-w-[30vw] min-w-[35vw] border-[#BB3E00] p-8">
               <form onSubmit={handleSubmit(onSubmit)} className="grid gap-1.5" >
               {error && <div className="text-red-500 text-center">{error}</div>}
@@ -49,7 +50,7 @@ const Login = () => {
               </form>
             </article>
           </div>
-        )
+        ) : <p>No file found</p>
       }
 
     </>

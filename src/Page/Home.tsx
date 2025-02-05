@@ -14,7 +14,8 @@ const Home = () => {
 
     const access = () => {  
         console.log("clicked")
-        dispatch(isOpen(!open))
+        console.log(open)
+        dispatch(isOpen((prev)=>!open))
         if(name)return;
     }
 
@@ -34,8 +35,8 @@ const Home = () => {
                     </ul>
                 </nav>
                 <div className="text-white relative z-50 flex gap-2">
-                    <button onClick={access} className="cursor-pointer ">{
-                        name ? <img src={photoURL} alt={name} /> : <FaUser />
+                    <button disabled={name?true:false} onClick={access} className="cursor-pointer ">{
+                        name ? <img className="size-[2rem] rounded-full " src={photoURL || "/assets/WhatsApp Image 2025-02-03 at 20.15.13.jpeg"} alt={name} /> : <FaUser />
                     }</button>
                     <button className=""><FaCartPlus /></button>
                 </div>
@@ -75,8 +76,6 @@ const Home = () => {
                 </section>
 
             </main>
-
-
         </div>
     )
 }

@@ -13,7 +13,7 @@ interface UserProp {
     error: string | null;
     photoURL: string | null;
     resetEmailSent: boolean;
-    open:boolean;
+    open: boolean;
 }
 
 
@@ -26,15 +26,15 @@ const initialState: UserProp = {
     loading: false,
     error: null,
     resetEmailSent: false,
-    open:false,
+    open: false,
 };
 
-export const signupWithEmailAndPassword = createAsyncThunk('auth/signup', async (credentials: { email: string, password: string, name: string, role: "user" | "admin"}, { rejectWithValue }) => {
+export const signupWithEmailAndPassword = createAsyncThunk('auth/signup', async (credentials: { email: string, password: string, name: string, role: "user" | "admin" }, { rejectWithValue }) => {
     try {
         const { email, password, name, role } = credentials;
-        if(!email||!password||!name) throw new Error("All fields are required")
+        if (!email || !password || !name) throw new Error("All fields are required")
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        if(!userCredential.user) rejectWithValue("User not created")
+        if (!userCredential.user) rejectWithValue("User not created")
         const user = userCredential.user;
         await updateProfile(user, { displayName: name });
 
@@ -61,7 +61,7 @@ export const loginWithEmailAndPassword = createAsyncThunk('auth/login', async (c
         if (!userData) throw new Error("User not found");
 
         return { uid: user.uid, email, name: userData?.name, role: userData?.role, photoURL: userData?.photoURL };
-    } catch (error: any ) {
+    } catch (error: any) {
         return rejectWithValue(error.message);
     }
 });
@@ -86,7 +86,7 @@ export const signInWithGoogle = createAsyncThunk('auth/google', async (_, { reje
                 uid: user.uid
             });
         }
-  
+
         return { uid: user.uid, email: user.email || "", name: user.displayName || "No Name", role, photoURL: user.photoURL };
     } catch (error: any) {
         return rejectWithValue(error.message);
@@ -108,7 +108,7 @@ export const resetPassword = createAsyncThunk(
         if (!email) throw new Error("Email is required");
         try {
             await sendPasswordResetEmail(auth, email);
-            return email; 
+            return email;
         } catch (error: any) {
             return rejectWithValue(error.message);
         }
@@ -119,7 +119,7 @@ const AuthReducer = createSlice({
     name: "auth",
     initialState,
     reducers: {
-        isOpen : (state,action)=>{
+        isOpen: (state, action) => {
             state.open = action.payload;
         }
     },

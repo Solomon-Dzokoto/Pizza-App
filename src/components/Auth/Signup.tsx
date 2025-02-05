@@ -1,24 +1,19 @@
 import {Link} from "react-router-dom"
 import { FcGoogle } from "react-icons/fc";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import * as yup from "yup"
 import { yupResolver } from "@hookform/resolvers/yup";
 import {signupWithEmailAndPassword ,signInWithGoogle} from "../../redux/reducers/AuthReducer"
 import { useForm } from "react-hook-form";
-import { AppDispatch } from "../../redux/store/store";
-// import { useNavigate } from "react-router-dom";
+import { AppDispatch, RootState } from "../../redux/store/store";
+import loader from '/assets/loading.png'
+import { useNavigate } from "react-router-dom";
 
-
-// interface SignupForm {
-//   name: string;
-//   email: string;
-//   password: string;
-//   confirmPassword: string;
-//   role: "user" | "admin";
-// }
 const Signup = () => {
   const dispatch = useDispatch<AppDispatch>()
+  const {loading,error} = useSelector((state: RootState) => state.auth)
 
+  const navigate=useNavigate()
   const schema = yup.object().shape({
     name: yup.string().required("Name is required"),
     email: yup.string().email("Please enter a valid email").required("Email is required"),
@@ -32,12 +27,14 @@ const Signup = () => {
   })
 
   const onSubmit = (data:any) => {
-    dispatch(signupWithEmailAndPassword( data))
+   if(dispatch(signupWithEmailAndPassword( data)))navigate("/");
+   console.log(dispatch(signupWithEmailAndPassword(data)))
   }
-  
+
   return (
-    <article className="border-2 fixed left-1/2 top-1/2 -translate-1/2 animate__animated animate_fadeInTopLeft shadow-lg rounded-md max-w-[30vw] min-w-[35vw] border-[#BB3E00] p-8">
+    <article className="border-2 fixed left-1/2 top-1/2 -translate-1/2 animate__animated animate__fadeInTopLeft shadow-lg rounded-md max-w-[30vw] min-w-[35vw] border-[#BB3E00] p-8">
       <form onSubmit={handleSubmit(onSubmit)} className=" gap-1.5" >
+        {error && (<p className="text-red-500">Error : {error}</p>)}
         <h1 className="font-semibold mb-8 text-center text-2xl text-[#BB3E00] ">Create an Account! ✍🏻</h1>
         <label htmlFor="name" className="font-semibold text-sm px-2  mb-2">Name</label>
         <input {...register("name")} type="text" placeholder="your fullname"  className="border p-2 outline-[#BB3E00] border-gray-400  w-full rounded-md " />
@@ -57,7 +54,7 @@ const Signup = () => {
           <option value="admin">Admin</option>
         </select>
         {errors.role && <small className="text-red-500">{errors.role.message}</small>}
-        <button type="submit" className="bg-[#BB3E00] w-full cursor-pointer text-white block font-semibold py-2 px-4 rounded-md mt-4">Create Account</button>
+        <button type="submit" className="bg-[#BB3E00] flex items-center justify-center w-full cursor-pointer text-white block font-semibold py-2 px-4 rounded-md mt-4">{loading ? <img  src={loader} /> : "Create Account"}</button>
         <button onClick={()=> dispatch(signInWithGoogle())} type="button" className="border-2 flex items-center justify-center gap-2 border-[#BB3E00] w-full text-[#BB3E00] cursor-pointer  font-semibold py-2 px-4 rounded-md mt-4">SignUp with Google <FcGoogle/> </button>
         <small>Already have an account?<Link to="/login" className="text-blue-500 hover:text-blue-700">Signin</Link></small>
       </form>
